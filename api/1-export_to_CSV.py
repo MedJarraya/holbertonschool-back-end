@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Retrieves data in CSV format
+Retrieves data in CSV format.
 """
 import csv
 import requests
@@ -9,7 +9,7 @@ from sys import argv
 
 def get_api():
     """
-    Retrieves data from API
+    Retrieves data from API.
     """
     url = 'https://jsonplaceholder.typicode.com/'
     uid = argv[1]
