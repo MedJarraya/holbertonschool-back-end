@@ -1,27 +1,41 @@
 #!/usr/bin/python3
-import requests
-import sys
+"""
+Given an employee ID, retrieves the name of the employee from the API.
+"""
+from requests import get
+from sys import argv
 
-employee_id = sys.argv[1]
-base_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
 
-response = requests.get(base_url)
+def get_api():
+    """
+    Retrieves data from API
+    """
+    emp_id = int(argv[1])
+    emp_name = ''
+    tasks_done = 0
+    tasks_total = 0
+    tasks_titles = []
 
-if response.status_code == 404:
-    print("Invalid Employee ID!")
-    sys.exit(1)
+    users_res = get('https://jsonplaceholder.typicode.com/users').json()
+    for user in users_res:
+        if user['id'] == emp_id:
+            emp_name = user['name']
+            break
 
-tasks = response.json()
-total_tasks = len(tasks)
-completed_tasks = [task for task in tasks if task["completed"]]
-num_completed_tasks = len(completed_tasks)
-employee_name = tasks[0]["userId"]
-employee_info_url = f"https://jsonplaceholder.typicode.com/users/{employee_name}"
-employee_response = requests.get(employee_info_url)
-employee_info = employee_response.json()
-employee_name = employee_info["name"]
+    tasks_res = get('https://jsonplaceholder.typicode.com/todos').json()
+    for task in tasks_res:
+        if task['userId'] == emp_id:
+            if task['completed']:
+                tasks_titles.append(task['title'])
+                tasks_done += 1
+            tasks_total += 1
 
-print(f"Employee {employee_name} is done with tasks({num_completed_tasks}/{total_tasks}):")
+    print('Employee {} is done with tasks({}/{}):'.format(emp_name,
+                                                          tasks_done,
+                                                          tasks_total))
+    for title in tasks_titles:
+        print('\t {}'.format(title))
 
-for task in completed_tasks:
-    print(f"\t- {task['title']}")
+
+if __name__ == '__main__':
+    get_api()
