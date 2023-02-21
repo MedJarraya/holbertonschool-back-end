@@ -11,7 +11,9 @@ url_base = 'https://jsonplaceholder.typicode.com/users/'
 
 
 def export_json(id):
-    """retrieve data in json format """
+    """
+    retrieve data in json format.
+    """
 
     file_name = str(id) + '.json'
     usr = get(url_base + str(id)).json()
